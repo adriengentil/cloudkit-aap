@@ -22,3 +22,5 @@
         hosted_cluster_namespace: "{{ cluster_working_namespace_result }}"
         hosted_cluster_settings: "{{ cluster_settings_result }}"
         hosted_cluster_state: present
+
+    - role: esi
