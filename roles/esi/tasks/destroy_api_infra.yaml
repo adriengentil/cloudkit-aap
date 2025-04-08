@@ -1,0 +1,30 @@
+- name: look for api floating ip
+  openstack.cloud.floating_ip_info:
+    description: "{{ hosted_cluster_name }}-api"
+  register: fips
+
+- when: fips.floating_ips
+  block:
+
+  - set_fact:
+      api_floating_ip: "{{fips.floating_ips[0].floating_ip_address}}"
+
+  - name: remove port forwardings
+    command: >-
+      openstack esi port forwarding purge {{ api_floating_ip }} -f json
+
+  - name: unset floating ip port
+    command: >-
+      openstack floating ip unset --port {{ api_floating_ip }}
+
+  - name: delete floating ip
+    command: >-
+      openstack floating ip delete {{ api_floating_ip }}
+
+- name: delete dns record
+  amazon.aws.route53:
+    state: absent
+    zone: "{{ base_domain }}"
+    record: "api.{{ hosted_cluster_name }}.{{base_domain}}"
+    type: A
+    wait: true

@@ -1,0 +1,51 @@
+- name: get kube-apiserver service
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Service
+    namespace: "clusters-{{ hosted_cluster_name }}"
+    name: kube-apiserver
+  register: kube_apiserver_service
+
+- set_fact:
+    api_internal_ip: "{{ kube_apiserver_service.resources[0].status.loadBalancer.ingress[0].ip }}"
+
+- name: look for api floating ip
+  openstack.cloud.floating_ip_info:
+    description: "{{ hosted_cluster_name }}-api"
+  register: fips
+
+- when: fips.floating_ips
+  set_fact:
+    api_floating_ip: "{{fips.floating_ips[0].floating_ip_address}}"
+
+- when: not fips.floating_ips
+  block:
+  - name: allocate api floating ip
+    command: >-
+      openstack floating ip create {{ floating_ip_network }} --description "{{ hosted_cluster_name }}-api"
+        -f json
+    register: fip_cmd_raw
+
+  - set_fact:
+      fip_cmd_result: "{{ fip_cmd_raw.stdout|from_json }}"
+
+  - set_fact:
+      api_floating_ip: "{{ fip_cmd_result.floating_ip_address }}"
+
+- name: create port forwarding
+  command: >-
+    openstack esi port forwarding create {{ api_internal_ip }} {{ api_floating_ip }}
+      -p {{ kube_apiserver_port }} -d "{{ hosted_cluster_name }}" -f json
+  register: create_forwarding
+  failed_when: >-
+    create_forwarding.rc != 0 and "duplicate port forwarding" not in create_forwarding.stderr
+
+- name: create dns record
+  amazon.aws.route53:
+    state: present
+    zone: "{{ base_domain }}"
+    record: "api.{{ hosted_cluster_name }}.{{base_domain}}"
+    type: A
+    ttl: "{{ dns_ttl|default(3600) }}"
+    value: "{{ api_floating_ip }}"
+    wait: true

@@ -1,0 +1,9 @@
+- when: hosted_cluster_state == "present"
+  include_role:
+    name: esi
+    tasks_from: create_api_infra
+
+- when: hosted_cluster_state == "absent"
+  include_role:
+    name: esi
+    tasks_from: destroy_api_infra
