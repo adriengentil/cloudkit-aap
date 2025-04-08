@@ -24,3 +24,5 @@
         hosted_cluster_state: present
 
     - role: esi
+      vars:
+        hosted_cluster_state: present
