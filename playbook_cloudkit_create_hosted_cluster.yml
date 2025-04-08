@@ -26,3 +26,4 @@
     - role: esi
       vars:
         hosted_cluster_state: present
+        hosted_cluster_name: "{{ cluster_order.metadata.name }}"
