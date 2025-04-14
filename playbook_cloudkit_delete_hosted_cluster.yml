@@ -9,16 +9,16 @@
     cluster_order: "{{ ansible_eda.event.payload }}"
 
   roles:
-    - role: cluster_working_namespace
+    - role: cloudkit.cluster_management.cluster_working_namespace
       vars:
         cluster_working_namespace_cluster_order_name: "{{ cluster_order.metadata.name }}"
 
-    - role: cluster_settings
+    - role: cloudkit.cluster_management.cluster_settings
       vars:
         cluster_settings_template_id: "{{ cluster_order.spec.templateID }}"
         cluster_settings_template_parameters: "{{ cluster_order.spec.templateParameters }}"
 
-    - role: hosted_cluster
+    - role: cloudkit.cluster_management.hosted_cluster
       vars:
         hosted_cluster_name: "{{ cluster_order.metadata.name }}"
         hosted_cluster_namespace: "{{ cluster_working_namespace_result }}"
