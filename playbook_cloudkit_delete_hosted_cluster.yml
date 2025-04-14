@@ -8,31 +8,41 @@
   vars:
     cluster_order: "{{ ansible_eda.event.payload }}"
 
-  roles:
-    - role: cloudkit.cluster_management.cluster_working_namespace
+  tasks:
+    - name: Set up cluster working namespace
+      ansible.builtin.include_role:
+        name: cloudkit.cluster_management.cluster_working_namespace
       vars:
         cluster_working_namespace_cluster_order_name: "{{ cluster_order.metadata.name }}"
 
-    - role: cloudkit.cluster_management.cluster_settings
+    - name: Configure cluster settings
+      ansible.builtin.include_role:
+        name: cloudkit.cluster_management.cluster_settings
       vars:
         cluster_settings_template_id: "{{ cluster_order.spec.templateID }}"
         cluster_settings_template_parameters: "{{ cluster_order.spec.templateParameters }}"
 
-    - role: cloudkit.cluster_management.hosted_cluster
+    - name: Manage hosted cluster
+      ansible.builtin.include_role:
+        name: cloudkit.cluster_management.hosted_cluster
       vars:
         hosted_cluster_name: "{{ cluster_order.metadata.name }}"
         hosted_cluster_namespace: "{{ cluster_working_namespace_result }}"
         hosted_cluster_settings: "{{ cluster_settings_result }}"
         hosted_cluster_state: absent
 
-    - role: infrastructure/api
+    - name: Manage infrastructure API
+      ansible.builtin.include_role:
+        name: infrastructure.api
       vars:
         hosted_cluster_name: "{{ cluster_order.metadata.name }}"
         hosted_cluster_namespace: "{{ cluster_working_namespace_result }}"
         hosted_cluster_settings: "{{ cluster_settings_result }}"
         hosted_cluster_state: absent
 
-    - role: infrastructure/ingress
+    - name: Manage infrastructure ingress
+      ansible.builtin.include_role:
+        name: infrastructure.ingress
       vars:
         hosted_cluster_name: "{{ cluster_order.metadata.name }}"
         hosted_cluster_namespace: "{{ cluster_working_namespace_result }}"
