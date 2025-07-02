@@ -14,4 +14,4 @@
       register: api_status
 
     - debug:
-        var: api_status
+        var: api_status.version
