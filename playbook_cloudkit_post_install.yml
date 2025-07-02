@@ -6,7 +6,7 @@
   tasks:
     - name: Get k8s cluster info
       kubernetes.core.k8s_cluster_info:
-      ingore_errors: true
+      ignore_errors: true
 
     - name: Get k8s cluster info
       kubernetes.core.k8s_cluster_info:
