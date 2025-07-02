@@ -6,6 +6,7 @@
   tasks:
     - name: Get k8s cluster info
       kubernetes.core.k8s_cluster_info:
+        kubeconfig: "{{ kubeconfig }}"
       register: api_status
     - debug:
         var: api_status
