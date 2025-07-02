@@ -4,6 +4,13 @@
   gather_facts: false
 
   tasks:
+    - name: Get k8s cluster info
+      kubernetes.core.k8s_cluster_info:
+      register: api_status
+
+    - debug:
+        var: api_status
+
     - name: Pass kubeconfig to next step in workflow
       ansible.builtin.set_stats:
         data:
