@@ -4,7 +4,7 @@ argument_specs:
       vm_order:
         type: dict
         required: true
-        description: The cluster order containing VM configuration
+        description: VM configuration
       template_parameters:
         type: dict
         description: VM configuration parameters

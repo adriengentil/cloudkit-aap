@@ -7,7 +7,7 @@
     vm_disk_size: "10Gi"
     vm_image_source: "{{ template_parameters.vm_image_source | default(default_vm_image_source) }}"
     vm_os_type: "{{ template_parameters.vm_os_type | default(default_vm_os_type) }}"
-    storage_class: "{{ default_storage_class }}"
+    storage_class: "{{ default_vm_storage_class }}"
     vm_expose_service: "{{ default_vm_expose_service }}"
     vm_service_type: "{{ default_vm_service_type }}"
     vm_service_ports: "{{ default_vm_service_ports }}"
