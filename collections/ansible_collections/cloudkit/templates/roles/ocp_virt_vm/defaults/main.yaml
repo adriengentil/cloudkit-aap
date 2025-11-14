@@ -3,7 +3,7 @@
 default_vm_internal_network: "hypershift"
 
 # Storage Defaults
-default_vm_storage_class: "nfs-client"  # NFS storage operator storage class
+default_vm_storage_class: "ocs-external-storagecluster-ceph-rbd"  # NFS storage operator storage class
 
 # Labels applied to all VM resources
 default_vm_labels: "{{ {vm_order_label: vm_order_name} }}"
