@@ -28,7 +28,9 @@
     vm_template_spec:
       domain:
         cpu:
-          cores: "{{ params.cpu_cores }}"
+          threads: 1
+          cores: 1
+          sockets: "{{ params.cpu_cores }}"
         memory:
           guest: "{{ params.memory }}"
         devices:
@@ -148,7 +150,8 @@
             url: "docker://{{ params.image_source }}"
         pvc:
           accessModes:
-            - ReadWriteOnce
+            - ReadWriteMany
+          volumeMode: Block
           resources:
             requests:
               storage: "{{ params.disk_size }}"
