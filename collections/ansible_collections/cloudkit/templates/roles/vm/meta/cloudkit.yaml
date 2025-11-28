@@ -1,0 +1,7 @@
+# Define the display name and description of the template
+title: VM Template
+description: >
+  VM Template
+
+# Specify this is a VM template (not a cluster template)
+template_type: vm
